@@ -35,7 +35,7 @@ namespace flashgg {
         vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "VertexTag" ) ) )
     {
         //minElPT_ = iConfig.getParameter<double>( "minElectronPT" );
-        minElPT = 20.
+        minElPT_ = 20.;
         maxElEta_ = iConfig.getParameter<double>( "maxElectronEta" );
         produces<vector<flashgg::DiElectronCandidate> >();
     }
@@ -68,7 +68,7 @@ namespace flashgg {
                 double eta2 = elec2->eta();
                 if( pt2 < minElPT_ || fabs( eta2 ) > maxElEta_ ) { continue; }
 
-                if( max( pt1, pt2) <30 ) { continue; }
+                if( max( pt1, pt2) < 30 ) { continue; }
 
                 Ptr<pat::Electron> LeadElectron = elecPointers[i];
                 Ptr<pat::Electron> SubLeadElectron = elecPointers[j];
@@ -85,15 +85,15 @@ namespace flashgg {
                 if( El1_charge * El2_charge < 0 ) { IsOPCharge = true; }
                 diEl.setIsOSDiElPair( IsOPCharge );
 
-                if !(IsOpCharge)  { continue; }
+                if (!IsOPCharge)  { continue; }
 
-                bool leadElIsTight  = LeadElectron->isTightElectron( myrecovtx );
-                bool subleadElIsTight  = SubLeadElectron->isTightElectron( myrecovtx );
-                bool bothTightEl = false;
+                //bool leadElIsTight  = LeadElectron->isTightElectron( myrecovtx );
+                //bool subleadElIsTight  = SubLeadElectron->isTightElectron( myrecovtx );
+                //bool bothTightEl = false;
                 //if( leadElIsTight && subleadElIsTight ) { bothTightEl = true; }
                 //diEl.setIfBothTightEl( bothTightEl );
 
-                bool bothGlobalAndPF = false;
+                //bool bothGlobalAndPF = false;
                 //if( LeadElectron->isPFElectron() && LeadElectron->isGlobalElectron() && SubLeadElectron->isPFElectron() && SubLeadElectron->isGlobalElectron() ) { bothGlobalAndPF = true; }
                 //diEl.setIfBothGlobalAndPF( bothGlobalAndPF );
 
