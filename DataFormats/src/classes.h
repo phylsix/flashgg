@@ -25,6 +25,7 @@
 #include "flashgg/DataFormats/interface/VHLooseTag.h"
 #include "flashgg/DataFormats/interface/VHTightTag.h"
 #include "flashgg/DataFormats/interface/VHEtTag.h"
+#include "flashgg/DataFormats/interface/DiElectronCandidate.h"   //W.Si
 #include "flashgg/DataFormats/interface/DiMuonCandidate.h"   //JTao
 #include "flashgg/DataFormats/interface/MuMuGammaCandidate.h"   //JTao
 #include "flashgg/DataFormats/interface/PhotonJetCandidate.h" //Martina
@@ -79,6 +80,16 @@ namespace  {
         std::vector<edm::Ptr<flashgg::GenDiPhoton> >        vec_ptr_fgg_gdip;
         edm::Wrapper<std::vector<edm::Ptr<flashgg::GenDiPhoton> > >   wrp_vec_ptr_fgg_gdip;
 
+        // -- W.Si
+        flashgg::DiElectronCandidate                                        fgg_die;
+        edm::Wrapper<flashgg::DiElectronCandidate>                      wrp_fgg_die;
+        std::vector<flashgg::DiElectronCandidate>                       vec_fgg_die;
+        edm::Wrapper<std::vector<flashgg::DiElectronCandidate> >    wrp_vec_fgg_die;
+        edm::Ptr<flashgg::DiElectronCandidate>                          ptr_fgg_die;
+        edm::Wrapper<edm::Ptr<flashgg::DiElectronCandidate> >       wrp_ptr_fgg_die;
+        std::vector<edm::Ptr<flashgg::DiElectronCandidate> >        vec_ptr_fgg_die;
+        edm::Wrapper<std::vector<edm::Ptr<flashgg::DiElectronCandidate> > >   wrp_vec_ptr_fgg_die;
+        
         //-----------J. Tao from IHEP-Beijing--------------
         flashgg::DiMuonCandidate                                        fgg_dim;
         edm::Wrapper<flashgg::DiMuonCandidate>                      wrp_fgg_dim;
