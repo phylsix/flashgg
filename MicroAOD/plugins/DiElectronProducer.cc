@@ -34,8 +34,7 @@ namespace flashgg {
         elecToken_( consumes<View<pat::Electron> >( iConfig.getParameter<InputTag> ( "ElectronTag" ) ) ),
         vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "VertexTag" ) ) )
     {
-        //minElPT_ = iConfig.getParameter<double>( "minElectronPT" );
-        minElPT_ = 20.;
+        minElPT_ = iConfig.getParameter<double>( "minElectronPT" );
         maxElEta_ = iConfig.getParameter<double>( "maxElectronEta" );
         produces<vector<flashgg::DiElectronCandidate> >();
     }
