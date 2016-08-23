@@ -31,8 +31,8 @@ namespace flashgg {
     };
 
     DiElectronProducer::DiElectronProducer( const ParameterSet &iConfig ) :
-        elecToken_( consumes<View<pat::Electron> >( iConfig.getParameter<InputTag> ( "ElectronTag" ) ) ),
-        vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "VertexTag" ) ) )
+        elecToken_( consumes<View<pat::Electron> >( iConfig.getParameter<InputTag> ( "electronTag" ) ) ),
+        vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "vertexTag" ) ) )
     {
         minElPT_ = iConfig.getParameter<double>( "minElectronPT" );
         maxElEta_ = iConfig.getParameter<double>( "maxElectronEta" );
