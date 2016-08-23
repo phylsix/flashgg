@@ -245,8 +245,8 @@
 <class name="std::vector<edm::Ptr<pat::MET> >"/>
 <class name="edm::Wrapper<std::vector<edm::Ptr<pat::MET> > >"/>
 
-<class name="flashgg::DiElectronCandidate" ClassVersion="">
-</class>
+<!--<class name="flashgg::DiElectronCandidate" ClassVersion="">
+</class>-->
 <class name="std::vector<flashgg::DiElectronCandidate>"/>
 <class name="edm::Wrapper<std::vector<flashgg::DiElectronCandidate> >"/>
 <class name="edm::Ptr<flashgg::DiElectronCandidate>"/>
