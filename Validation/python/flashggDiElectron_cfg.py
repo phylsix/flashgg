@@ -77,14 +77,23 @@ process.MessageLogger.cerr.threshold = 'ERROR' # can't get suppressWarning to wo
 #					LHETag=cms.untracked.InputTag('externalLHEProducer'),
 #					LHERunTag=cms.untracked.InputTag('LHERunInfoProduct')
 #					)
+process.out = cms.OutputModule("PoolOutputModule",
+                               fileName = cms.untracked.string('myOutput.root'),
+                               #outputCommands = tagDefaultOutputCommand                              
+                               )
 
-process.flashggDiElectrons = cms.EDProducer('FlashggDiElectronProducer',
+process.diElectronProduce = cms.EDProducer('FlashggDiElectronProducer',
 				    	    electronTag = cms.InputTag('slimmedElectrons'),
 				    	    vertexTag = cms.InputTag('offlineSlimmedPrimaryVertices'),
 				   	    ## parameter
 					    minElectronPT = cms.double(20.),
 					    maxElectronEta = cms.double(2.4)
 					    )
+process.diElectronAnalyze = cms.EDAnalyzer('FlashggDiElectronAnalyzer',
+					   electronTag = cms.untracked.InputTag('slimmedElectrons'),
+					   vertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices')
+					   )
 
-process.p = cms.Path(process.flashggDiElectrons)
-#process.e = cms.EndPath(process.out)
+
+process.p = cms.Path(process.diElectronProduce*process.diElectronAnalyze)
+process.e = cms.EndPath(process.out)
