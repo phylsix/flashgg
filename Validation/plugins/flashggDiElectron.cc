@@ -22,11 +22,12 @@
 using namespace std;
 using namespace edm;
 
-class flashggDiElectron : public edm::EDAnalyzer
+namespace flashgg {
+class DiElectronAnalyzer : public edm::EDAnalyzer
 {
 public:
-    explicit flashggDiElectron( const edm::ParameterSet & );
-    ~flashggDiElectron();
+    explicit DiElectronAnalyzer( const edm::ParameterSet & );
+    ~DiElectronAnalyzer();
 
     static void fillDescriptions( edm::ConfigurationDescriptions &descriptions );
 
@@ -53,7 +54,7 @@ private:
     vector<bool> isGenMatched_;
 };
 
-flashggDiElectron::flashggDiElectron( const ParameterSet &iConfig ) :
+DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
     elecToken_( consumes<View<pat::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
     vertexToken_( consumes<View<reco::Vertex> >( iConfig.getUntrackedParameter<InputTag> ( "vertexTag", InputTag( "offlineSlimmedPrimaryVertices" ) ) ) ),
     pfcandidateToken_( consumes<View<pat::PackedCandidate> >( iConfig.getUntrackedParameter<InputTag> ( "PFCandidatesTag", InputTag("packedPFCandidates") ) ) ),
@@ -62,7 +63,7 @@ flashggDiElectron::flashggDiElectron( const ParameterSet &iConfig ) :
 
 }
 
-flashggDiElectron::~flashggDiElectron()
+DiElectronAnalyzer::~DiElectronAnalyzer()
 {
 
 }
@@ -70,7 +71,7 @@ flashggDiElectron::~flashggDiElectron()
 
 
 void
-flashggDiElectron::analyze( const edm::Event &iEvent, const edm::EventSetup &iSetup )
+DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iSetup )
 {
 
     Handle<View<pat::Electron> > electrons;
@@ -115,7 +116,7 @@ flashggDiElectron::analyze( const edm::Event &iEvent, const edm::EventSetup &iSe
 }
 
 void
-flashggDiElectron::beginJob()
+DiElectronAnalyzer::beginJob()
 {
     electronTree = fs_->make<TTree>("electronTree", "electronData");
  
@@ -128,12 +129,12 @@ flashggDiElectron::beginJob()
 }
 
 void
-flashggDiElectron::endJob()
+DiElectronAnalyzer::endJob()
 {
 }
 
 void
-flashggDiElectron::fillDescriptions( edm::ConfigurationDescriptions &descriptions )
+DiElectronAnalyzer::fillDescriptions( edm::ConfigurationDescriptions &descriptions )
 {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
@@ -142,5 +143,7 @@ flashggDiElectron::fillDescriptions( edm::ConfigurationDescriptions &description
     descriptions.addDefault( desc );
 }
 
+}
 
-DEFINE_FWK_MODULE( flashggDiElectron );
+typedef flashgg::DiElectronAnalyzer FlashggDiElectronAnalyzer;
+DEFINE_FWK_MODULE( FlashggDiElectronAnalyzer );

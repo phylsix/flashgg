@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.Utilities.FileUtils as FileUtils
 
-process = cms.Process("flashggDiElectronProducer")
+process = cms.Process("flashggDiElectron")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -89,6 +89,12 @@ process.diElectronProduce = cms.EDProducer('FlashggDiElectronProducer',
 					    minElectronPT = cms.double(20.),
 					    maxElectronEta = cms.double(2.4)
 					    )
+
+process.TFileService = cms.Service("TFileService",
+		      		fileName = cms.string("histo.root"),
+		            	closeFileFast = cms.untracked.bool(True)
+			      )
+
 process.diElectronAnalyze = cms.EDAnalyzer('FlashggDiElectronAnalyzer',
 					   electronTag = cms.untracked.InputTag('slimmedElectrons'),
 					   vertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices')
