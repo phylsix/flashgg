@@ -48,17 +48,17 @@ private:
 
     TTree *diElectronTree;
 
-    double pt_0_;
-    double eta_0_;
-    double phi_0_;
-    double energy_0_;
-    
-    double pt_1_;
-    double eta_1_;
-    double phi_1_;
-    double energy_1_;
-    
-    double invM_;
+    Float_t pt_0_;
+    Float_t eta_0_;
+    Float_t phi_0_;
+    Float_t energy_0_;
+   
+    Float_t pt_1_;
+    Float_t eta_1_;
+    Float_t phi_1_;
+    Float_t energy_1_;
+   
+    Float_t invM_;
 };
 
 DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
@@ -139,9 +139,8 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
 	phi_1_ = elecSb->phi();
 	energy_1_ = elecSb->energy();
 
-	double zMass = ( elecLd->p4() + elecSb->p4() ).mass();
+	Float_t zMass = ( elecLd->p4() + elecSb->p4() ).mass();
 	invM_ = zMass;
-	// add momentum for each; invM etc.
     }
     diElectronTree->Fill();
 }
@@ -151,17 +150,17 @@ DiElectronAnalyzer::beginJob()
 {
     diElectronTree = fs_->make<TTree>("diElectronTree", "diElectronData");
  
-    diElectronTree->Branch("pt_0", &pt_0_);
-    diElectronTree->Branch("eta_0", &eta_0_);
-    diElectronTree->Branch("phi_0", &phi_0_);
-    diElectronTree->Branch("energy_0", &energy_0_);
+    diElectronTree->Branch("pt_0", &pt_0_, "pt_0/F");
+    diElectronTree->Branch("eta_0", &eta_0_, "eta_0/F");
+    diElectronTree->Branch("phi_0", &phi_0_, "phi_0/F");
+    diElectronTree->Branch("energy_0", &energy_0_, "energy_0/F");
 
-    diElectronTree->Branch("pt_1", &pt_1_);
-    diElectronTree->Branch("eta_1", &eta_1_);
-    diElectronTree->Branch("phi_1", &phi_1_);
-    diElectronTree->Branch("energy_1", &energy_1_);
+    diElectronTree->Branch("pt_1", &pt_1_, "pt_1/F");
+    diElectronTree->Branch("eta_1", &eta_1_, "eta_1/F");
+    diElectronTree->Branch("phi_1", &phi_1_, "phi_1/F");
+    diElectronTree->Branch("energy_1", &energy_1_, "energy_1/F");
 
-    diElectronTree->Branch("invM", &invM_);
+    diElectronTree->Branch("invM", &invM_, "invM/F");
 }
 
 void
