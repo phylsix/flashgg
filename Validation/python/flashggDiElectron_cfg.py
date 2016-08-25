@@ -77,11 +77,6 @@ process.MessageLogger.cerr.threshold = 'ERROR' # can't get suppressWarning to wo
 #					LHETag=cms.untracked.InputTag('externalLHEProducer'),
 #					LHERunTag=cms.untracked.InputTag('LHERunInfoProduct')
 #					)
-process.out = cms.OutputModule("PoolOutputModule",
-                               fileName = cms.untracked.string('myOutput.root'),
-                               #outputCommands = tagDefaultOutputCommand                              
-                               )
-
 process.diElectronProduce = cms.EDProducer('FlashggDiElectronProducer',
 				    	    electronTag = cms.InputTag('slimmedElectrons'),
 				    	    vertexTag = cms.InputTag('offlineSlimmedPrimaryVertices'),
@@ -90,16 +85,23 @@ process.diElectronProduce = cms.EDProducer('FlashggDiElectronProducer',
 					    maxElectronEta = cms.double(2.4)
 					    )
 
-process.TFileService = cms.Service("TFileService",
-		      		fileName = cms.string("histo.root"),
-		            	closeFileFast = cms.untracked.bool(True)
-			      )
 
 process.diElectronAnalyze = cms.EDAnalyzer('FlashggDiElectronAnalyzer',
 					   electronTag = cms.untracked.InputTag('slimmedElectrons'),
-					   vertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices')
+				    	   vertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
+					   dielectronTag = cms.untracked.InputTag('diElectronProduce')
 					   )
+
+process.TFileService = cms.Service("TFileService",
+		      		   fileName = cms.string("histo.root"),
+		            	   closeFileFast = cms.untracked.bool(True)
+			           )
+
+#process.out = cms.OutputModule("PoolOutputModule",
+#                               fileName = cms.untracked.string('myOutput.root'),
+#                              #outputCommands = tagDefaultOutputCommand                              
+#                               )
 
 
 process.p = cms.Path(process.diElectronProduce*process.diElectronAnalyze)
-process.e = cms.EndPath(process.out)
+#process.e = cms.EndPath(process.out)

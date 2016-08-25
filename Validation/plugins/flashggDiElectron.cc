@@ -42,21 +42,29 @@ private:
 
     EDGetTokenT<View<pat::Electron> >  elecToken_;
     EDGetTokenT<View<reco::Vertex> >   vertexToken_;
+    EDGetTokenT<View<flashgg::DiElectronCandidate> > diElecToken_;
     EDGetTokenT<View<pat::PackedCandidate> >  pfcandidateToken_;
     EDGetTokenT<View<reco::GenParticle> > genParticleToken_;
 
-    TTree *electronTree;
+    TTree *diElectronTree;
 
-    vector<Float_t> pt_;
-    vector<Float_t> eta_;
-    vector<Float_t> phi_;
-    vector<Float_t> energy_;
-    vector<bool> isGenMatched_;
+    double pt_0_;
+    double eta_0_;
+    double phi_0_;
+    double energy_0_;
+    
+    double pt_1_;
+    double eta_1_;
+    double phi_1_;
+    double energy_1_;
+    
+    double invM_;
 };
 
 DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
     elecToken_( consumes<View<pat::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
     vertexToken_( consumes<View<reco::Vertex> >( iConfig.getUntrackedParameter<InputTag> ( "vertexTag", InputTag( "offlineSlimmedPrimaryVertices" ) ) ) ),
+    diElecToken_( consumes<View<flashgg::DiElectronCandidate> >(iConfig.getUntrackedParameter<InputTag> ("dielectronTag", InputTag("diElectronProduce")))),
     pfcandidateToken_( consumes<View<pat::PackedCandidate> >( iConfig.getUntrackedParameter<InputTag> ( "PFCandidatesTag", InputTag("packedPFCandidates") ) ) ),
     genParticleToken_( consumes<View<reco::GenParticle> >( iConfig.getUntrackedParameter<InputTag> ("GenParticleTag", InputTag("prunedGenParticles") )) )
 {
@@ -83,49 +91,77 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
     Handle<View<reco::GenParticle> > genParticles;
     iEvent.getByToken( genParticleToken_, genParticles );
 
-    pt_.clear();
-    eta_.clear();
-    phi_.clear();
-    energy_.clear();
-    isGenMatched_.clear();
+    Handle<View<flashgg::DiElectronCandidate> > dielectrons;
+    iEvent.getByToken( diElecToken_, dielectrons );
+
+    pt_0_ = 0;;
+    eta_0_ = 0;;
+    phi_0_ = 0;;
+    energy_0_ = 0;;
     
-    for( size_t ielec = 0; ielec < electrons->size(); ielec++) {
-        
-        Ptr<pat::Electron> elecPtr = electrons->ptrAt( ielec );
+    pt_1_ = 0;;
+    eta_1_ = 0;;
+    phi_1_ = 0;;
+    energy_1_ = 0;;
+    
+    invM_ = 0;;
+    
 
-        pt_.push_back( elecPtr->pt() );
-        eta_.push_back( elecPtr->eta() );
-        phi_.push_back( elecPtr->phi() );
-        energy_.push_back( elecPtr->energy() );
-        bool isGenMatched = false;
+    for( size_t iDiEl = 0; iDiEl < dielectrons->size(); iDiEl++) {
+	Ptr<flashgg::DiElectronCandidate> dielecPtr = dielectrons->ptrAt( iDiEl );
+	
+	const pat::Electron* elecLd = dielecPtr->leadingElectron();
+	const pat::Electron* elecSb = dielecPtr->subleadingElectron();
+	
+	bool bothGenMatched = false;
 
-        for( unsigned int genLoop = 0; genLoop < genParticles->size(); genLoop++) {
-            Ptr<reco::GenParticle> genPtr = genParticles->ptrAt(genLoop);
+	for( unsigned int igen = 0; igen < genParticles->size(); igen++) {
+            Ptr<reco::GenParticle> genPtr = genParticles->ptrAt(igen);
             if( abs(genPtr->pdgId()) != 11 || genPtr->status() != 1) { continue; }
-            double dR = ROOT::Math::VectorUtil::DeltaR( elecPtr->p4(), genPtr->p4() );
-            if( dR < 0.1) {
-                isGenMatched = true;
+            double dR_0= ROOT::Math::VectorUtil::DeltaR( elecLd->p4(), genPtr->p4() );
+            double dR_1= ROOT::Math::VectorUtil::DeltaR( elecSb->p4(), genPtr->p4() );
+
+	    if( dR_0 < 0.1 && dR_1 < 0.1) {
+                bothGenMatched = true;
                 break;
             }
-        }
+	}
+	
+	if( !bothGenMatched ) { }
+        	
+	pt_0_ = elecLd->pt();
+	eta_0_ = elecLd->eta();
+	phi_0_ = elecLd->phi();
+	energy_0_ = elecLd->energy();
 
-        isGenMatched_.push_back( isGenMatched );
+	pt_1_ = elecSb->pt();
+	eta_1_ = elecSb->eta();
+	phi_1_ = elecSb->phi();
+	energy_1_ = elecSb->energy();
+
+	double zMass = ( elecLd->p4() + elecSb->p4() ).mass();
+	invM_ = zMass;
+	// add momentum for each; invM etc.
     }
-
-    electronTree->Fill();
+    diElectronTree->Fill();
 }
 
 void
 DiElectronAnalyzer::beginJob()
 {
-    electronTree = fs_->make<TTree>("electronTree", "electronData");
+    diElectronTree = fs_->make<TTree>("diElectronTree", "diElectronData");
  
-    electronTree->Branch("pt", &pt_);
-    electronTree->Branch("eta", &eta_);
-    electronTree->Branch("phi", &phi_);
-    electronTree->Branch("energy", &energy_);
-    electronTree->Branch("isGenMatched", &isGenMatched_);
+    diElectronTree->Branch("pt_0", &pt_0_);
+    diElectronTree->Branch("eta_0", &eta_0_);
+    diElectronTree->Branch("phi_0", &phi_0_);
+    diElectronTree->Branch("energy_0", &energy_0_);
 
+    diElectronTree->Branch("pt_1", &pt_1_);
+    diElectronTree->Branch("eta_1", &eta_1_);
+    diElectronTree->Branch("phi_1", &phi_1_);
+    diElectronTree->Branch("energy_1", &energy_1_);
+
+    diElectronTree->Branch("invM", &invM_);
 }
 
 void
