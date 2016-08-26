@@ -5,18 +5,19 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
+#include "flashgg/DataFormats/interface/Electron.h"
 
 namespace flashgg {
     class DiElectronCandidate : public reco::CompositeCandidate
     {
     public:
         DiElectronCandidate();
-        DiElectronCandidate( edm::Ptr<pat::Electron>, edm::Ptr<pat::Electron> );
-        DiElectronCandidate( const pat::Electron &, const pat::Electron & );
+        DiElectronCandidate( edm::Ptr<flashgg::Electron>, edm::Ptr<flashgg::Electron> );
+        DiElectronCandidate( const flashgg::Electron &, const flashgg::Electron & );
         ~DiElectronCandidate();
 
-        const pat::Electron *leadingElectron() const;
-        const pat::Electron *subleadingElectron() const;
+        const flashgg::Electron *leadingElectron() const;
+        const flashgg::Electron *subleadingElectron() const;
 
         bool IsOSDiElPair() const { return IsOSDiElPair_; }
         void setIsOSDiElPair( bool val ) { IsOSDiElPair_ = val;}

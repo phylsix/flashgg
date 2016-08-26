@@ -15,6 +15,7 @@
 #include "DataFormats/Common/interface/PtrVector.h"
 
 #include "flashgg/DataFormats/interface/DiElectronCandidate.h"
+#include "flashgg/DataFormats/interface/Electron.h"
 
 #include "TTree.h"
 #include "Math/VectorUtil.h"
@@ -40,7 +41,7 @@ private:
     virtual void analyze( const edm::Event &, const edm::EventSetup & ) override;
     virtual void endJob() override;
 
-    EDGetTokenT<View<pat::Electron> >  elecToken_;
+    EDGetTokenT<View<flashgg::Electron> >  elecToken_;
     EDGetTokenT<View<reco::Vertex> >   vertexToken_;
     EDGetTokenT<View<flashgg::DiElectronCandidate> > diElecToken_;
     EDGetTokenT<View<pat::PackedCandidate> >  pfcandidateToken_;
@@ -62,7 +63,7 @@ private:
 };
 
 DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
-    elecToken_( consumes<View<pat::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
+    elecToken_( consumes<View<flashgg::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
     vertexToken_( consumes<View<reco::Vertex> >( iConfig.getUntrackedParameter<InputTag> ( "vertexTag", InputTag( "offlineSlimmedPrimaryVertices" ) ) ) ),
     diElecToken_( consumes<View<flashgg::DiElectronCandidate> >(iConfig.getUntrackedParameter<InputTag> ("dielectronTag", InputTag("diElectronProduce")))),
     pfcandidateToken_( consumes<View<pat::PackedCandidate> >( iConfig.getUntrackedParameter<InputTag> ( "PFCandidatesTag", InputTag("packedPFCandidates") ) ) ),
@@ -82,11 +83,11 @@ void
 DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iSetup )
 {
 
-    Handle<View<pat::Electron> > electrons;
-    iEvent.getByToken( elecToken_, electrons );
+    //Handle<View<flashgg::Electron> > electrons;
+    //iEvent.getByToken( elecToken_, electrons );
 
-    Handle<View<pat::PackedCandidate> > pfcandidates;
-    iEvent.getByToken( pfcandidateToken_, pfcandidates );
+    //Handle<View<flashgg::PackedCandidate> > pfcandidates;
+    //iEvent.getByToken( pfcandidateToken_, pfcandidates );
 
     Handle<View<reco::GenParticle> > genParticles;
     iEvent.getByToken( genParticleToken_, genParticles );
@@ -105,16 +106,18 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
     energy_1_ = 0;;
     
     invM_ = 0;;
-    
-
+   
+    //cout << "dielectron size " << dielectrons->size() << endl; 
+	
     for( size_t iDiEl = 0; iDiEl < dielectrons->size(); iDiEl++) {
 	Ptr<flashgg::DiElectronCandidate> dielecPtr = dielectrons->ptrAt( iDiEl );
 	
-	const pat::Electron* elecLd = dielecPtr->leadingElectron();
-	const pat::Electron* elecSb = dielecPtr->subleadingElectron();
+	const flashgg::Electron* elecLd = dielecPtr->leadingElectron();
+	const flashgg::Electron* elecSb = dielecPtr->subleadingElectron();
 	
 	bool bothGenMatched = false;
 
+	if(! iEvent.isRealData() ) {
 	for( unsigned int igen = 0; igen < genParticles->size(); igen++) {
             Ptr<reco::GenParticle> genPtr = genParticles->ptrAt(igen);
             if( abs(genPtr->pdgId()) != 11 || genPtr->status() != 1) { continue; }
@@ -126,8 +129,9 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
                 break;
             }
 	}
+	}
 	
-	if( !bothGenMatched ) { }
+	if( bothGenMatched ) { cout<<"one matched couple found"<<endl; }
         	
 	pt_0_ = elecLd->pt();
 	eta_0_ = elecLd->eta();

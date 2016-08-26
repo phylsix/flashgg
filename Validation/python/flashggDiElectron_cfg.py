@@ -1,6 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.Utilities.FileUtils as FileUtils
 
+from flashgg.MetaData.JobConfig import customize
+
+customize.setDefault("maxEvents", 1000)
+
 process = cms.Process("flashggDiElectron")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -14,7 +18,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 1000 ) )
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000 )
+process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound'))
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000000 )
 
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
 
@@ -57,7 +62,8 @@ if current_gt.count("::All"):
 
 #process.source = cms.Source("PoolSource",fileNames=cms.untracked.vstring("/store/mc/RunIISpring15DR74/ttHJetToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/70000/0232BC3C-01FF-E411-8779-0025907B4FC2.root"))
 
-process.source = cms.Source("PoolSource",fileNames=cms.untracked.vstring("/store/mc/RunIISpring15DR74/GluGluHToGG_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/4E503483-EA32-E511-AB07-02163E013542.root"))
+#process.source = cms.Source("PoolSource",fileNames=cms.untracked.vstring("/store/mc/RunIISpring15DR74/GluGluHToGG_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/4E503483-EA32-E511-AB07-02163E013542.root"))
+process.source = cms.Source("PoolSource", fileNames=cms.untracked.vstring("/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/02404626-C64D-E611-9744-485B39897231.root"))
 
 #process.source = cms.Source ("PoolSource",fileNames = cms.untracked.vstring("file:myMicroAODOutputFile.root"))
 
@@ -105,3 +111,4 @@ process.TFileService = cms.Service("TFileService",
 
 process.p = cms.Path(process.diElectronProduce*process.diElectronAnalyze)
 #process.e = cms.EndPath(process.out)
+customize(process)
