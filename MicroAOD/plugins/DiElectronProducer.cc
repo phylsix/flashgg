@@ -22,8 +22,8 @@ namespace flashgg {
         DiElectronProducer( const ParameterSet & );
     private:
         void produce( Event &, const EventSetup & ) override;
-        EDGetTokenT<View<flashgg::Electron> > elecToken_;
-        EDGetTokenT<View<reco::Vertex> > vertexToken_;
+        EDGetTokenT<View<pat::Electron> > elecToken_;
+	//EDGetTokenT<View<reco::Vertex> > vertexToken_;
 
         double minElPT_;
         double maxElEta_;
@@ -31,8 +31,8 @@ namespace flashgg {
     };
 
     DiElectronProducer::DiElectronProducer( const ParameterSet &iConfig ) :
-        elecToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag> ( "electronTag" ) ) ),
-        vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "vertexTag" ) ) )
+        elecToken_( consumes<View<pat::Electron> >( iConfig.getParameter<InputTag> ( "electronTag" ) ) )
+	//vertexToken_( consumes<View<reco::Vertex> >( iConfig.getParameter<InputTag> ( "vertexTag" ) ) )
     {
         minElPT_ = iConfig.getParameter<double>( "minElectronPT" );
         maxElEta_ = iConfig.getParameter<double>( "maxElectronEta" );
@@ -42,38 +42,41 @@ namespace flashgg {
     void DiElectronProducer::produce( Event &evt, const EventSetup & )
     {
 
-        Handle<View<reco::Vertex> > primaryVertices;
-        evt.getByToken( vertexToken_, primaryVertices );
+        //Handle<View<reco::Vertex> > primaryVertices;
+        //evt.getByToken( vertexToken_, primaryVertices );
         //const PtrVector<reco::Vertex>& pvPointers = primaryVertices->ptrVector();
-        edm::Ptr<reco::Vertex> vtx = primaryVertices->ptrAt( 0 ); //pvPointers[0]; //selected vertex 0
-        const reco::Vertex myrecovtx = reco::Vertex( *vtx );
+        //edm::Ptr<reco::Vertex> vtx = primaryVertices->ptrAt( 0 ); //pvPointers[0]; //selected vertex 0
+        //const reco::Vertex myrecovtx = reco::Vertex( *vtx );
 
-        Handle<View<flashgg::Electron> > electrons;
+        Handle<View<pat::Electron> > electrons;
         evt.getByToken( elecToken_, electrons );
-        const std::vector<edm::Ptr<flashgg::Electron> > &elecPointers = electrons->ptrs();
+        const std::vector<edm::Ptr<pat::Electron> > &elecPointers = electrons->ptrs();
 
 
         auto_ptr<vector<flashgg::DiElectronCandidate> > diElectronColl( new vector<flashgg::DiElectronCandidate> );
         //    cout << "evt.id().event()= " << evt.id().event() << "\tevt.isRealData()= " << evt.isRealData() << "\telecPointers.size()= " << elecPointers.size() << "\tpvPointers.size()= " << pvPointers.size() << endl;
 
         for( unsigned int i = 0 ; i < elecPointers.size() ; i++ ) {
-            Ptr<flashgg::Electron> elec1 = elecPointers[i];
+            Ptr<pat::Electron> elec1 = elecPointers[i];
             double pt1 = elec1->pt();
             double eta1 = elec1->eta();
             if( pt1 < minElPT_ || fabs( eta1 ) > maxElEta_ ) { continue; }
             for( unsigned int j = i + 1 ; j < elecPointers.size() ; j++ ) {
-                Ptr<flashgg::Electron> elec2 = elecPointers[j];
+                Ptr<pat::Electron> elec2 = elecPointers[j];
                 double pt2 = elec2->pt();
                 double eta2 = elec2->eta();
                 if( pt2 < minElPT_ || fabs( eta2 ) > maxElEta_ ) { continue; }
 
                 if( max( pt1, pt2) < 30 ) { continue; }
 
-                Ptr<flashgg::Electron> LeadElectron = elecPointers[i];
-                Ptr<flashgg::Electron> SubLeadElectron = elecPointers[j];
+		flashgg::Electron LeadElectron(*elecPointers[i]);
+		flashgg::Electron SubLeadElectron(*elecPointers[j]);
+
+		//const flashgg::Electron* LeadElectron = &elec00;
+                //const flashgg::Electron* SubLeadElectron = &elec11;
                 if( pt2 > pt1 ) {
-                    LeadElectron = elecPointers[j];
-                    SubLeadElectron = elecPointers[i];
+			flashgg::Electron LeadElectron(*elecPointers[j]); 
+			flashgg::Electron SubLeadElectron(*elecPointers[i]);
                 }
 
                 DiElectronCandidate diEl( LeadElectron, SubLeadElectron );

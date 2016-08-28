@@ -41,8 +41,8 @@ private:
     virtual void analyze( const edm::Event &, const edm::EventSetup & ) override;
     virtual void endJob() override;
 
-    EDGetTokenT<View<flashgg::Electron> >  elecToken_;
-    EDGetTokenT<View<reco::Vertex> >   vertexToken_;
+    //EDGetTokenT<View<flashgg::Electron> >  elecToken_;
+    //EDGetTokenT<View<reco::Vertex> >   vertexToken_;
     EDGetTokenT<View<flashgg::DiElectronCandidate> > diElecToken_;
     EDGetTokenT<View<pat::PackedCandidate> >  pfcandidateToken_;
     EDGetTokenT<View<reco::GenParticle> > genParticleToken_;
@@ -63,8 +63,8 @@ private:
 };
 
 DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
-    elecToken_( consumes<View<flashgg::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
-    vertexToken_( consumes<View<reco::Vertex> >( iConfig.getUntrackedParameter<InputTag> ( "vertexTag", InputTag( "offlineSlimmedPrimaryVertices" ) ) ) ),
+    //elecToken_( consumes<View<pat::Electron> >( iConfig.getUntrackedParameter<InputTag> ( "electronTag", InputTag( "slimmedElectrons") ) ) ),
+    //vertexToken_( consumes<View<reco::Vertex> >( iConfig.getUntrackedParameter<InputTag> ( "vertexTag", InputTag( "offlineSlimmedPrimaryVertices" ) ) ) ),
     diElecToken_( consumes<View<flashgg::DiElectronCandidate> >(iConfig.getUntrackedParameter<InputTag> ("dielectronTag", InputTag("diElectronProduce")))),
     pfcandidateToken_( consumes<View<pat::PackedCandidate> >( iConfig.getUntrackedParameter<InputTag> ( "PFCandidatesTag", InputTag("packedPFCandidates") ) ) ),
     genParticleToken_( consumes<View<reco::GenParticle> >( iConfig.getUntrackedParameter<InputTag> ("GenParticleTag", InputTag("prunedGenParticles") )) )
@@ -107,7 +107,7 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
     
     invM_ = 0;;
    
-    //cout << "dielectron size " << dielectrons->size() << endl; 
+    cout << "dielectron size " << dielectrons->size() << endl; 
 	
     for( size_t iDiEl = 0; iDiEl < dielectrons->size(); iDiEl++) {
 	Ptr<flashgg::DiElectronCandidate> dielecPtr = dielectrons->ptrAt( iDiEl );
@@ -146,6 +146,7 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
 	Float_t zMass = ( elecLd->p4() + elecSb->p4() ).mass();
 	invM_ = zMass;
     }
+    //cout<< "pt_0 "<< pt_0_ <<endl;
     diElectronTree->Fill();
 }
 
