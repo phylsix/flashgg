@@ -49,17 +49,17 @@ private:
 
     TTree *diElectronTree;
 
-    Float_t pt_0_;
-    Float_t eta_0_;
-    Float_t phi_0_;
-    Float_t energy_0_;
+    vector<Float_t> pt_0_;
+    vector<Float_t> eta_0_;
+    vector<Float_t> phi_0_;
+    vector<Float_t> energy_0_;
    
-    Float_t pt_1_;
-    Float_t eta_1_;
-    Float_t phi_1_;
-    Float_t energy_1_;
+    vector<Float_t> pt_1_;
+    vector<Float_t> eta_1_;
+    vector<Float_t> phi_1_;
+    vector<Float_t> energy_1_;
    
-    Float_t invM_;
+    vector<Float_t> invM_;
 };
 
 DiElectronAnalyzer::DiElectronAnalyzer( const ParameterSet &iConfig ) :
@@ -95,17 +95,17 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
     Handle<View<flashgg::DiElectronCandidate> > dielectrons;
     iEvent.getByToken( diElecToken_, dielectrons );
 
-    pt_0_ = 0;;
-    eta_0_ = 0;;
-    phi_0_ = 0;;
-    energy_0_ = 0;;
+    pt_0_.clear();
+    eta_0_.clear();
+    phi_0_ .clear();
+    energy_0_.clear();
     
-    pt_1_ = 0;;
-    eta_1_ = 0;;
-    phi_1_ = 0;;
-    energy_1_ = 0;;
+    pt_1_.clear();
+    eta_1_.clear();
+    phi_1_.clear();
+    energy_1_.clear();
     
-    invM_ = 0;;
+    invM_.clear();
    
     cout << "dielectron size " << dielectrons->size() << endl; 
 	
@@ -133,20 +133,19 @@ DiElectronAnalyzer::analyze( const edm::Event &iEvent, const edm::EventSetup &iS
 	
 	if( bothGenMatched ) { cout<<"one matched couple found"<<endl; }
         	
-	pt_0_ = elecLd->pt();
-	eta_0_ = elecLd->eta();
-	phi_0_ = elecLd->phi();
-	energy_0_ = elecLd->energy();
+	pt_0_.push_back( elecLd->pt() );
+	eta_0_.push_back( elecLd->eta() );
+	phi_0_.push_back( elecLd->phi() );
+	energy_0_.push_back( elecLd->energy() );
 
-	pt_1_ = elecSb->pt();
-	eta_1_ = elecSb->eta();
-	phi_1_ = elecSb->phi();
-	energy_1_ = elecSb->energy();
+	pt_1_.push_back( elecSb->pt() );
+	eta_1_.push_back( elecSb->eta() );
+	phi_1_.push_back( elecSb->phi() );
+	energy_1_.push_back( elecSb->energy() );
 
-	Float_t zMass = ( elecLd->p4() + elecSb->p4() ).mass();
-	invM_ = zMass;
+	invM_.push_back( ( elecLd->p4() + elecSb->p4() ).mass() );
     }
-    //cout<< "pt_0 "<< pt_0_ <<endl;
+    cout<< "pt_0 "<< pt_0_[0] <<endl;
     diElectronTree->Fill();
 }
 
@@ -155,17 +154,17 @@ DiElectronAnalyzer::beginJob()
 {
     diElectronTree = fs_->make<TTree>("diElectronTree", "diElectronData");
  
-    diElectronTree->Branch("pt_0", &pt_0_, "pt_0/F");
-    diElectronTree->Branch("eta_0", &eta_0_, "eta_0/F");
-    diElectronTree->Branch("phi_0", &phi_0_, "phi_0/F");
-    diElectronTree->Branch("energy_0", &energy_0_, "energy_0/F");
+    diElectronTree->Branch("pt_0", &pt_0_);
+    diElectronTree->Branch("eta_0", &eta_0_);
+    diElectronTree->Branch("phi_0", &phi_0_);
+    diElectronTree->Branch("energy_0", &energy_0_);
 
-    diElectronTree->Branch("pt_1", &pt_1_, "pt_1/F");
-    diElectronTree->Branch("eta_1", &eta_1_, "eta_1/F");
-    diElectronTree->Branch("phi_1", &phi_1_, "phi_1/F");
-    diElectronTree->Branch("energy_1", &energy_1_, "energy_1/F");
+    diElectronTree->Branch("pt_1", &pt_1_);
+    diElectronTree->Branch("eta_1", &eta_1_);
+    diElectronTree->Branch("phi_1", &phi_1_);
+    diElectronTree->Branch("energy_1", &energy_1_);
 
-    diElectronTree->Branch("invM", &invM_, "invM/F");
+    diElectronTree->Branch("invM", &invM_);
 }
 
 void
