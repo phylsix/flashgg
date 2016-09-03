@@ -95,16 +95,16 @@ process.CSampleDumper.dumpWorkspace = False
 process.CSampleDumper.quietRooFit = True
 
 
-#process.load("flashgg.Taggers.diphotonTagDumper_cfi") ##  import diphotonTagDumper 
-#process.tagsDumper.className = "DiPhotonTagDumper"
-#process.tagsDumper.src = "flashggTagMerger"
-##process.tagsDumper.src = "flashggTagSystematics"
-#process.tagsDumper.processId = "test"
-#process.tagsDumper.dumpTrees = True
-#process.tagsDumper.dumpWorkspace = False 
-#process.tagsDumper.dumpHistos = False
-#process.tagsDumper.quietRooFit = True
-#process.tagsDumper.nameTemplate = cms.untracked.string("$PROCESS_$SQRTS_$CLASSNAME_$SUBCAT_$LABEL")
+process.load("flashgg.Taggers.diphotonTagDumper_cfi") ##  import diphotonTagDumper 
+process.tagsDumper.className = "DiPhotonTagDumper"
+process.tagsDumper.src = "flashggTagMerger"
+process.tagsDumper.src = "flashggTagSystematics"
+process.tagsDumper.processId = "test"
+process.tagsDumper.dumpTrees = True
+process.tagsDumper.dumpWorkspace = False 
+process.tagsDumper.dumpHistos = False
+process.tagsDumper.quietRooFit = True
+process.tagsDumper.nameTemplate = cms.untracked.string("$PROCESS_$SQRTS_$CLASSNAME_$SUBCAT_$LABEL")
 
 #tagList=[
 #    ["UntaggedTag",4],
@@ -141,10 +141,10 @@ process.CSampleDumper.quietRooFit = True
 #                           nScaleWeights=-1
 #                           )
 
-dipho_var = ["invM := diphoton().mass()",
-	     #"mva",
-	     "leadPt := diphoton().leadingPhoton().Pt()",
-	     "subleadPt := diphoton().subleadingPhoton().Pt()"
+dipho_var = ["CMS_hgg_mass[160,100,180]:= diPhoton().mass",
+	     "mva := diPhotonMVA().result",
+	     "leadPt := diPhoton().leadingPhoton().pt()",
+	     "subleadPt := diPhoton().subLeadingPhoton().pt()"
 	     ]
 
 cfgTools.addCategories(process.CSampleDumper,
@@ -191,7 +191,7 @@ if customize.processId == "Data":
 
 #process.p = cms.Path(process.customSequence*process.flashggUntaggedVHHadronicTag*process.tightTagDumper*process.vbfTagDumper)
 #process.p = cms.Path(process.dataRequirements*process.customSequence*process.flashggTagMerger*process.flashggVHEtUntaggedTag*process.looseTagDumper*process.tightTagDumper*process.vbfTagDumper*process.thadTagDumper*process.tlepTagDumper*process.etTagDumper*process.hadTagDumper*process.hadDiJetDumper*process.tightUntaggedDumper*process.looseUntaggedDumper*process.etUntaggedTagDumper*process.tagsDumper)
-process.p = cms.Path(process.dataRequirements*process.flashggTagSequence*process.VHCSample)
+process.p = cms.Path(process.dataRequirements*process.flashggTagSequence*process.VHCSample*process.CSampleDumper)
 
 #print process.vhEtTagDumper.src
 #process.p = cms.Path(process.flashggTagSequence)

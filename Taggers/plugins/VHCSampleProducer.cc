@@ -314,7 +314,7 @@ namespace flashgg {
 //                tagMETs.push_back( theMET );
 //            }
 //
-            if( ((lead_pass && !sublead_pass) || (!lead_pass && sublead_pass)) && (hasGoodElec || hasGoodMuons)) {
+            if( ((lead_pass && !sublead_pass) || (!lead_pass && sublead_pass)) /*&& (hasGoodElec || hasGoodMuons)*/) {
                 vhloose_obj.setJets( tagJets );
 
                 vhloose_obj.setMuons( tagMuons );
@@ -323,6 +323,7 @@ namespace flashgg {
                 vhloose_obj.setDiPhotonIndex( diphoIndex );
                 vhloose_obj.setSystLabel( systLabel_ );
                 vhloose->push_back( vhloose_obj );
+                cout<<"There are actually events here!!!"<<endl;
                 if( ! evt.isRealData() ) {
                     TagTruthBase truth_obj;
                     truth_obj.setGenPV( higgsVtx );
