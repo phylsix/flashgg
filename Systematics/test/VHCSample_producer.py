@@ -91,7 +91,7 @@ process.load("flashgg.Taggers.flashggTagSequence_cfi")
 process.CSampleDumper = createTagDumper("VHLooseTag")
 process.CSampleDumper.src = cms.InputTag("VHCSample")  
 process.CSampleDumper.dumpTrees = True
-process.CSampleDumper.dumpWorkspace = False
+process.CSampleDumper.dumpWorkspace = True
 process.CSampleDumper.quietRooFit = True
 
 
@@ -101,7 +101,7 @@ process.tagsDumper.src = "flashggTagMerger"
 process.tagsDumper.src = "flashggTagSystematics"
 process.tagsDumper.processId = "test"
 process.tagsDumper.dumpTrees = True
-process.tagsDumper.dumpWorkspace = False 
+process.tagsDumper.dumpWorkspace = True 
 process.tagsDumper.dumpHistos = False
 process.tagsDumper.quietRooFit = True
 process.tagsDumper.nameTemplate = cms.untracked.string("$PROCESS_$SQRTS_$CLASSNAME_$SUBCAT_$LABEL")
@@ -144,7 +144,13 @@ process.tagsDumper.nameTemplate = cms.untracked.string("$PROCESS_$SQRTS_$CLASSNA
 dipho_var = ["CMS_hgg_mass[160,100,180]:= diPhoton().mass",
 	     "mva := diPhotonMVA().result",
 	     "leadPt := diPhoton().leadingPhoton().pt()",
-	     "subleadPt := diPhoton().subLeadingPhoton().pt()"
+	     "subleadPt := diPhoton().subLeadingPhoton().pt()",
+	     "pfMET_rawPt := ?(met.size>0)? met.at(0).uncorPt : -1",
+	     "pfMET_rawPhi := ?(met.size>0)? met.at(0).uncorPhi : -1",
+             "pfMET_rawSumEt := ?(met.size>0)? met.at(0).uncorSumEt : -1",
+             "pfMET_corPt    := ?(met.size>0)? met.at(0).corPt : -1",
+ 	     "pfMET_corPhi   := ?(met.size>0)? met.at(0).corPhi : -1",
+ 	     "pfMET_corSumEt := ?(met.size>0)? met.at(0).corSumEt : -1"
 	     ]
 
 cfgTools.addCategories(process.CSampleDumper,
@@ -200,7 +206,7 @@ process.p = cms.Path(process.dataRequirements*process.flashggTagSequence*process
 
 # import flashgg customization
 # set default options if needed
-customize.setDefault("maxEvents",-1)
+#customize.setDefault("maxEvents",-1)
 customize.setDefault("targetLumi",3.6e+3)
 customize.setDefault("puTarget",'2.18e+03,2.4e+04,7e+04,1.98e+05,3.61e+05,6.19e+05,1.29e+06,9e+06,2.33e+07,3.11e+07,4.09e+07,5.77e+07,8.37e+07,1.16e+08,1.51e+08,1.84e+08,2.06e+08,2.11e+08,2.01e+08,1.82e+08,1.56e+08,1.28e+08,9.8e+07,7.05e+07,4.72e+07,2.94e+07,1.71e+07,9.23e+06,4.68e+06,2.24e+06,1.02e+06,4.36e+05,1.78e+05,6.87e+04,2.51e+04,8.62e+03,2.79e+03,851,244,66.2,17.1,4.25,1.04,0.257,0.0658,0.0178,0.00504,0.00146,0.000424,0.000121')
 

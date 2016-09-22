@@ -308,13 +308,13 @@ namespace flashgg {
 //
 
 //------>MET info
-//            if( METs->size() != 1 ) { std::cout << "WARNING - #MET is not 1" << std::endl;}
-//            Ptr<pat::MET> theMET = METs->ptrAt( 0 );
-//            if( theMET->pt() < METThreshold_ ) {
-//                tagMETs.push_back( theMET );
-//            }
-//
-            if( ((lead_pass && !sublead_pass) || (!lead_pass && sublead_pass)) /*&& (hasGoodElec || hasGoodMuons)*/) {
+            if( METs->size() != 1 ) { std::cout << "WARNING - #MET is not 1" << std::endl;}
+            Ptr<pat::MET> theMET = METs->ptrAt( 0 );
+            if( theMET->pt() < METThreshold_ ) {
+                tagMETs.push_back( theMET );
+            }
+
+            if( ((lead_pass && !sublead_pass) || (!lead_pass && sublead_pass)) && (hasGoodElec || hasGoodMuons)) {
                 vhloose_obj.setJets( tagJets );
 
                 vhloose_obj.setMuons( tagMuons );
